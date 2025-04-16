@@ -146,6 +146,7 @@ def main():
     # Convert nominal size to bytes
     nominal_size_list = nominal_size.split()
     nominal_size_value = 0
+    
     if 'KB' in nominal_size_list[1]:
         nominal_size_value = float(nominal_size_list[0]) * 1024
     elif 'MB' in nominal_size_list[1]:
@@ -184,8 +185,8 @@ def main():
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Real Size of Cache: {real_size} bits")
         print(f"Real Size of Cache: {real_size / (2**10)} Kbytes")
-    
-    while (input != 0):
-        input("Enter a word address (enter 0 to exit):")
+    input_addr = input("Enter a word address:")
+    while (input_addr != "0"):
+        input_addr = input("Enter a word address (enter 0 to exit):")
 if __name__ == "__main__":
     main() 

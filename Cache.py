@@ -86,7 +86,7 @@ def calculate_offset(block_size):
     logarithm of the result.
     """
     
-    offset = math.log2(int(block_size*4))
+    offset = math.log2(int(block_size)*4)
     return offset
 
 def user_input():
@@ -102,7 +102,7 @@ def user_input():
     
     nominal_size = input("Enter the nominal size of the cache and specify the amount of bytes (as in KB,MB): ")
     WordPerBlock = input("Enter the number of words per block(1, 2, 4, 8): ")
-    if (math.log2(WordPerBlock) > 3): {
+    if (math.log2(float(WordPerBlock)) > 3): {
         print("Invalid size 1,2,4,8")
     }
     Mapping = input("Enter the mapping type (Direct, Set): ")
@@ -167,6 +167,6 @@ def main():
         print(f"Real Size of Cache: {real_size} bits")
         print(f"Real Size of Cache: {real_size/(2**10)} Kbytes")
         
-    print(f"Offset: {calculate_offset(WordPerBlock)} bits")
+    # print(f"Offset: {calculate_offset(WordPerBlock)} bits")
 if __name__ == "__main__":
     main() 

@@ -13,7 +13,7 @@ def calculate_amount_of_sets(number_of_blocks, set_associativity):
     amount_of_sets = int(number_of_blocks / set_associativity)
     return amount_of_sets 
 
-def calculate_real_size(nominal_size_value,tag_size):
+def calculate_real_size(nominal_size_value,tag_size, block_size, number_of_blocks):
     """
     The function calculates the real size based on a nominal size value and a tag size.
     
@@ -23,14 +23,16 @@ def calculate_real_size(nominal_size_value,tag_size):
     :return: The function `calculate_real_size` returns the calculated real size value based on the
     formula provided in the function.
     """
-    
-    real_size = nominal_size_value + ((int(tag_size) )/8)* (2**16)
-    return real_size
+    data_bits = block_size * 8
+    bits_per_block = data_bits + int(tag_size) + 1
+    total_bits = bits_per_block * number_of_blocks
+    return total_bits
+    #real_size = nominal_size_value + ((int(tag_size) )/8)* (2**16)
+    #return real_size
 
 def calculate_tag_sizeDM(number_of_blocks, offset):
     """
     The function calculates the tag size based on the number of blocks and offset.
-    
     :param number_of_blocks: The `number_of_blocks` parameter represents the total number of blocks
     in a cache or memory system
     :param offset: The `offset` parameter in the `calculate_tag_size` function represents the number of bits
@@ -38,9 +40,10 @@ def calculate_tag_sizeDM(number_of_blocks, offset):
     are needed to represent the number of blocks
     :return: the tag size in bits.
     """
-    
-    tag_size = (32 - math.log2(int(number_of_blocks)) - int(offset))
-    return tag_size
+    index_bits = int(math.log2(number_of_blocks))
+    return 32 - index_bits - int(offset)
+    #tag_size = (32 - math.log2(int(number_of_blocks)) - int(offset))
+    #return tag_size
 
 def calculate_number_of_blocks(nominal_size_value, block_size):
     """
@@ -85,9 +88,9 @@ def calculate_offset(block_size):
     which is determined by multiplying the `WordPerBlock` parameter by 4 and then taking the base 2
     logarithm of the result.
     """
-    
-    offset = math.log2(int(block_size)*4)
-    return offset
+    return int(math.log2(block_size))
+    #offset = math.log2(int(block_size)*4)
+    #return offset
 
 def user_input():
     """
@@ -102,9 +105,9 @@ def user_input():
     
     nominal_size = input("Enter the nominal size of the cache and specify the amount of bytes (as in KB,MB): ")
     WordPerBlock = input("Enter the number of words per block(1, 2, 4, 8): ")
-    if (math.log2(float(WordPerBlock)) > 3): {
-        print("Invalid size 1,2,4,8")
-    }
+    if WordPerBlock not in ["1", "2", "4", "8"]:
+        print("Invalid input")
+        exit(1)
     Mapping = input("Enter the mapping type (Direct, Set): ")
     if Mapping.lower() == "set":
         SetAssociativity = input("Enter the set associativity: ")
@@ -115,58 +118,45 @@ def user_input():
 
 def main():
 
-    # This code snippet is a part of a program written in Python that simulates cache memory
-    # operations. Let's break down what the code is doing:
     nominal_size, WordPerBlock, Mapping, SetAssociativity = user_input()
-    
-    #= user_input()
+    # Convert nominal size to bytes
     nominal_size_list = nominal_size.split()
     nominal_size_value = 0
     if 'KB' in nominal_size_list[1]:
         nominal_size_value = float(nominal_size_list[0]) * 1024
     elif 'MB' in nominal_size_list[1]:
         nominal_size_value = float(nominal_size_list[0]) * 1024 * 1024
-   
-    #print(f"Nominal Size: {nominal_size_value} bytes")
-    #print(f"Words per Block: {WordPerBlock}")
-    #print(f"Mapping Type: {Mapping}")
-    #print (f"Log base 2 of : {math.log2(nominal_size_value)}")
-   
-    Offset = calculate_offset(WordPerBlock)
-    BlockSize = calculate_block_size(int(WordPerBlock))
+
+    WordPerBlock = int(WordPerBlock)
+    BlockSize = calculate_block_size(WordPerBlock)
+    Offset = calculate_offset(BlockSize)
     number_of_blocks = calculate_number_of_blocks(nominal_size_value, BlockSize)
-    calculate_tag_size_value = calculate_tag_sizeDM(number_of_blocks, calculate_offset(WordPerBlock))
-    real_size = calculate_real_size(nominal_size_value, calculate_tag_size_value)
-    amount_of_sets = calculate_amount_of_sets(number_of_blocks, SetAssociativity) if SetAssociativity else None
-    
-    
-    # print(f"Offset: {Offset}, bits")
-    # print(f"Number of Block Size: {number_of_blocks} blocks")
-    # print(f"bits of number of Block Size: {math.log2(number_of_blocks)} bits")
-    # print(f"Tag Size: {calculate_tag_size_value} bits")
-    # print(f"Real Size of Cache: {real_size} bits")
-    # print(f"Real Size of Cache: {real_size/(2**10)} Kbytes")
-    
+
     if SetAssociativity:
-        
-        calculate_tag_size_value = 32 - math.log2(amount_of_sets) - Offset
-        real_size = calculate_real_size(nominal_size_value, calculate_tag_size_value)
+        amount_of_sets = calculate_amount_of_sets(number_of_blocks, SetAssociativity)
+        tag_size = 32 - int(math.log2(amount_of_sets)) - Offset
+        cache = {i: [] for i in range(amount_of_sets)}
+    else:
+        cache = {}
+        tag_size = calculate_tag_sizeDM(number_of_blocks, Offset)
+
+    real_size = calculate_real_size(nominal_size_value, tag_size, BlockSize, number_of_blocks)
+
+    if SetAssociativity:
         print(f"Set Associativity: {SetAssociativity}")
-        print(f"The amount of set in bits is: {math.log2(amount_of_sets)} bits")
-        print(f"Offset: {Offset}, bits")
+        print(f"The amount of sets: {amount_of_sets} ({int(math.log2(amount_of_sets))} index bits)")
+        print(f"Offset: {Offset} bits")
         print(f"Number of Block Size: {number_of_blocks} blocks")
-        print(f"bits of number of tag: {calculate_tag_size_value} bits")
+        print(f"Tag Size: {int(tag_size)} bits")
         print(f"Real Size of Cache: {real_size} bits")
-        print(f"Real Size of Cache: {real_size/(2**10)} Kbytes")
-    else :
+        print(f"Real Size of Cache: {real_size / (2**10)} Kbytes")
+    else:
         print("Direct Mapping:")
-        print(f"bits of number of Block Size: {math.log2(number_of_blocks)} bits")
-        print(f"Offset: {Offset}, bits")
+        print(f"Index bits: {int(math.log2(number_of_blocks))} bits")
+        print(f"Offset: {Offset} bits")
         print(f"Number of Block Size: {number_of_blocks} blocks")
-        print(f"Tag Size: {calculate_tag_size_value} bits")
+        print(f"Tag Size: {int(tag_size)} bits")
         print(f"Real Size of Cache: {real_size} bits")
-        print(f"Real Size of Cache: {real_size/(2**10)} Kbytes")
-        
-    # print(f"Offset: {calculate_offset(WordPerBlock)} bits")
+        print(f"Real Size of Cache: {real_size / (2**10)} Kbytes")
 if __name__ == "__main__":
     main() 

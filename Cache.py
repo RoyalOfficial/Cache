@@ -155,10 +155,10 @@ def main():
     BlockSize = calculate_block_size(WordPerBlock)
     Offset = calculate_offset(BlockSize)
     number_of_blocks = calculate_number_of_blocks(nominal_size_value, BlockSize)
-    if number_of_blocks % SetAssociativity != 0:
-        print("Invalid configuration: associativity must evenly divide number of blocks")
-        exit(1)
     if SetAssociativity:
+        if number_of_blocks % SetAssociativity != 0:
+            print("Invalid configuration: associativity must evenly divide number of blocks")
+            exit(1)
         amount_of_sets = calculate_amount_of_sets(number_of_blocks, SetAssociativity)
         tag_size = 32 - int(math.log2(amount_of_sets)) - Offset
         cache = {i: [] for i in range(amount_of_sets)}
@@ -184,5 +184,8 @@ def main():
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Real Size of Cache: {real_size} bits")
         print(f"Real Size of Cache: {real_size / (2**10)} Kbytes")
+    
+    while (input != 0):
+        input("Enter a word address (enter 0 to exit):")
 if __name__ == "__main__":
     main() 

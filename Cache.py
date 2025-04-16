@@ -115,7 +115,31 @@ def user_input():
     else:
         SetAssociativity = None
     return nominal_size, WordPerBlock, Mapping, SetAssociativity
-
+def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity):
+    block_address = word_address // words_per_block
+    index = block_address % num_sets
+    tag = block_address // num_sets
+    
+    if mapping == "direct":
+        if index in cache and cache[index] == tag:
+            return "Hit"
+        else:
+            cache[index] = tag
+            return "Miss"
+        
+    if mapping == "set":
+        # Grabs the set (list of all the tags)
+        tag_list = cache[index]
+        if tag in cache[index]:
+            #LRU move the most recently used to the end
+            tag_list.remove(tag)
+            tag_list.append(tag)
+            return "Hit"
+        else:
+            if (len(tag_list) >= set_associativity):
+                cache[index].pop(0) #Get rid of most recently used
+            cache[index].append(tag) #Add the new tag
+            return "Miss"
 def main():
 
     nominal_size, WordPerBlock, Mapping, SetAssociativity = user_input()
@@ -131,7 +155,9 @@ def main():
     BlockSize = calculate_block_size(WordPerBlock)
     Offset = calculate_offset(BlockSize)
     number_of_blocks = calculate_number_of_blocks(nominal_size_value, BlockSize)
-
+    if number_of_blocks % SetAssociativity != 0:
+        print("Invalid configuration: associativity must evenly divide number of blocks")
+        exit(1)
     if SetAssociativity:
         amount_of_sets = calculate_amount_of_sets(number_of_blocks, SetAssociativity)
         tag_size = 32 - int(math.log2(amount_of_sets)) - Offset

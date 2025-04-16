@@ -10,10 +10,8 @@ def calculate_amount_of_sets(number_of_blocks, set_associativity):
     in the cache
     :return: the amount of sets in the cache.
     """
-    
     amount_of_sets = int(number_of_blocks / set_associativity)
-    return amount_of_sets
-    
+    return amount_of_sets 
 
 def calculate_real_size(nominal_size_value,tag_size):
     """
@@ -25,12 +23,11 @@ def calculate_real_size(nominal_size_value,tag_size):
     :return: The function `calculate_real_size` returns the calculated real size value based on the
     formula provided in the function.
     """
+    
     real_size = nominal_size_value + ((int(tag_size) )/8)* (2**16)
     return real_size
-     
 
 def calculate_tag_sizeDM(number_of_blocks, offset):
-
     """
     The function calculates the tag size based on the number of blocks and offset.
     
@@ -41,7 +38,6 @@ def calculate_tag_sizeDM(number_of_blocks, offset):
     are needed to represent the number of blocks
     :return: the tag size in bits.
     """
-  
     
     tag_size = (32 - math.log2(int(number_of_blocks)) - int(offset))
     return tag_size
@@ -58,6 +54,7 @@ def calculate_number_of_blocks(nominal_size_value, block_size):
     blocks can fit into the `nominal_size`
     :return: the number of blocks that can be created from a given nominal size and block size.
     """
+    
     nominal_size = int(nominal_size_value)
     block_size = int(block_size)
     return nominal_size // block_size
@@ -102,13 +99,16 @@ def user_input():
     3. Mapping
     4. SetAssociativity
     """
+    
     nominal_size = input("Enter the nominal size of the cache and specify the amount of bytes (as in KB,MB): ")
-    WordPerBlock = input("Enter the number of words per block: ")
+    WordPerBlock = input("Enter the number of words per block(1, 2, 4, 8): ")
+    if (math.log2(WordPerBlock) > 3): {
+        print("Invalid size 1,2,4,8")
+    }
     Mapping = input("Enter the mapping type (Direct, Set): ")
     if Mapping.lower() == "set":
         SetAssociativity = input("Enter the set associativity: ")
-        setAssociativity = int(SetAssociativity)
-        
+        SetAssociativity = int(SetAssociativity)
     else:
         SetAssociativity = None
     return nominal_size, WordPerBlock, Mapping, SetAssociativity
@@ -117,10 +117,7 @@ def main():
 
     # This code snippet is a part of a program written in Python that simulates cache memory
     # operations. Let's break down what the code is doing:
-    nominal_size = "1 MB"
-    WordPerBlock = 4
-    Mapping = "set"
-    SetAssociativity = 4
+    nominal_size, WordPerBlock, Mapping, SetAssociativity = user_input()
     
     #= user_input()
     nominal_size_list = nominal_size.split()

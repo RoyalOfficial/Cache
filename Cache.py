@@ -108,13 +108,14 @@ def user_input():
     if WordPerBlock not in ["1", "2", "4", "8"]:
         print("Invalid input")
         exit(1)
-    Mapping = input("Enter the mapping type (Direct, Set): ")
+    Mapping = input("Enter the mapping type (Direct, Set): ").lower()
     if Mapping.lower() == "set":
         SetAssociativity = input("Enter the set associativity: ")
         SetAssociativity = int(SetAssociativity)
     else:
         SetAssociativity = None
     return nominal_size, WordPerBlock, Mapping, SetAssociativity
+
 def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity):
     block_address = word_address // words_per_block
     index = block_address % num_sets
@@ -140,9 +141,17 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
                 cache[index].pop(0) #Get rid of most recently used
             cache[index].append(tag) #Add the new tag
             return "Miss"
+        
+def clear_cache(mapping,cache):
+    if mapping == "direct":
+        cache.clear()
+    else:
+        for i in cache:
+            cache[i] = []
+
 def main():
 
-    nominal_size, WordPerBlock, Mapping, SetAssociativity = user_input()
+    nominal_size, words_per_block, mapping, SetAssociativity = user_input()
     # Convert nominal size to bytes
     nominal_size_list = nominal_size.split()
     nominal_size_value = 0
@@ -152,8 +161,8 @@ def main():
     elif 'MB' in nominal_size_list[1]:
         nominal_size_value = float(nominal_size_list[0]) * 1024 * 1024
 
-    WordPerBlock = int(WordPerBlock)
-    BlockSize = calculate_block_size(WordPerBlock)
+    words_per_block = int(words_per_block)
+    BlockSize = calculate_block_size(words_per_block)
     Offset = calculate_offset(BlockSize)
     number_of_blocks = calculate_number_of_blocks(nominal_size_value, BlockSize)
     if SetAssociativity:
@@ -185,8 +194,18 @@ def main():
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Real Size of Cache: {real_size} bits")
         print(f"Real Size of Cache: {real_size / (2**10)} Kbytes")
+    num_sets = amount_of_sets if SetAssociativity else number_of_blocks
     input_addr = input("Enter a word address:")
+    access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
     while (input_addr != "0"):
-        input_addr = input("Enter a word address (enter 0 to exit):")
+        input_addr = input("Enter a word address (enter 0 to exit, clear to clear):")
+        if (input_addr == "clear"):
+            clear_cache(mapping, cache)
+            continue
+        if not input_addr.isdigit():
+            print("invalid input enter numerical values only")
+            continue
+        accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
+        print(f"{accuracy}")
 if __name__ == "__main__":
     main() 

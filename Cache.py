@@ -1,7 +1,7 @@
 import math;
 def calculate_amount_of_sets(number_of_blocks, set_associativity):
     """
-    The function calculates the amount of sets based on the number of blocks and set associativity.
+    This function calculates the amount of sets based on the number of blocks and set associativity.
     
     :param number_of_blocks: The `number_of_blocks` parameter represents the total number of blocks
     in a cache or memory system
@@ -13,9 +13,9 @@ def calculate_amount_of_sets(number_of_blocks, set_associativity):
     amount_of_sets = int(number_of_blocks / set_associativity)
     return amount_of_sets 
 
-def calculate_real_size(nominal_size_value,tag_size, block_size, number_of_blocks):
+def calculate_real_size(tag_size, block_size, number_of_blocks):
     """
-    The function calculates the real size based on a nominal size value and a tag size.
+    This function calculates the real size based on a nominal size value and a tag size.
     
     :param nominal_size_value: The `nominal_size_value` parameter represents the base value of the size.
     It is the starting point for calculating the real size
@@ -32,7 +32,7 @@ def calculate_real_size(nominal_size_value,tag_size, block_size, number_of_block
 
 def calculate_tag_sizeDM(number_of_blocks, offset):
     """
-    The function calculates the tag size based on the number of blocks and offset.
+    This function calculates the tag size based on the number of blocks and offset.
     :param number_of_blocks: The `number_of_blocks` parameter represents the total number of blocks
     in a cache or memory system
     :param offset: The `offset` parameter in the `calculate_tag_size` function represents the number of bits
@@ -47,7 +47,7 @@ def calculate_tag_sizeDM(number_of_blocks, offset):
 
 def calculate_number_of_blocks(nominal_size_value, block_size):
     """
-    The function calculates the number of blocks that can fit within a given nominal size based on a
+    This function calculates the number of blocks that can fit within a given nominal size based on a
     specified block size.
     
     :param nominal_size: The `nominal_size` parameter represents the total size of the material in
@@ -65,7 +65,7 @@ def calculate_number_of_blocks(nominal_size_value, block_size):
 
 def calculate_block_size(word_per_block):
     """
-    The function calculates the block size based on the number of words per block.
+    This function calculates the block size based on the number of words per block.
     
     :param word_per_block: It looks like the function `calculate_block_size` takes a parameter `word_per_block`
     which represents the number of words in a block. The function calculates the block size based on this
@@ -79,7 +79,7 @@ def calculate_block_size(word_per_block):
 
 def calculate_offset(block_size):
     """
-    The function calculates the offset based on the number of words per block.
+    This function calculates the offset based on the number of words per block.
     
     :param WordPerBlock: It looks like the function `calculate_offset` takes a parameter `WordPerBlock`
     which represents the number of words per block. The function calculates the offset based on this
@@ -94,7 +94,7 @@ def calculate_offset(block_size):
 
 def user_input():
     """
-    The `user_input` function prompts the user to input cache parameters such as nominal size, words per
+    This function prompts the user to input cache parameters such as nominal size, words per
     block, and mapping type, handling set associativity if specified.
     :return: The `user_input` function returns a tuple containing the following values in order:
     1. nominal_size
@@ -117,6 +117,9 @@ def user_input():
     return nominal_size, WordPerBlock, Mapping, SetAssociativity
 
 def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity):
+    """
+    This function is responsible for accessing the cache and depends on direct mapping
+    """
     block_address = word_address // words_per_block
     index = block_address % num_sets
     tag = block_address // num_sets
@@ -143,6 +146,11 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
             return "Miss"
         
 def clear_cache(mapping,cache):
+    """
+    Takes in a cache and clears it
+    :param Mapping: Type of mapping which depends on how cache is cleared
+    :param cache: cache to clear
+    """
     if mapping == "direct":
         cache.clear()
     else:

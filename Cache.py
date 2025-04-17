@@ -155,7 +155,8 @@ def main():
     # Convert nominal size to bytes
     nominal_size_list = nominal_size.split()
     nominal_size_value = 0
-    hits, misses = 0
+    hits = 0 
+    misses = 0
     if 'KB' in nominal_size_list[1]:
         nominal_size_value = float(nominal_size_list[0]) * 1024
     elif 'MB' in nominal_size_list[1]:
@@ -212,5 +213,6 @@ def main():
             misses+=1
     print(f"Total Hits: {hits}")
     print(f"Total Misses: {misses}")
+    
 if __name__ == "__main__":
     main() 

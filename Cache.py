@@ -132,7 +132,7 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
         # Grabs the set (list of all the tags)
         tag_list = cache[index]
         if tag in cache[index]:
-            #LRU move the most recently used to the end
+            #LRU(leasy recently used) move the most recently used to the end
             tag_list.remove(tag)
             tag_list.append(tag)
             return "Hit"
@@ -155,7 +155,7 @@ def main():
     # Convert nominal size to bytes
     nominal_size_list = nominal_size.split()
     nominal_size_value = 0
-    
+    hits, misses = 0
     if 'KB' in nominal_size_list[1]:
         nominal_size_value = float(nominal_size_list[0]) * 1024
     elif 'MB' in nominal_size_list[1]:
@@ -206,6 +206,11 @@ def main():
             print("invalid input enter numerical values only")
             continue
         accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
-        print(f"{accuracy}")
+        if accuracy == "Hit":
+            hits+=1
+        if accuracy == "Miss":
+            misses+=1
+    print(f"Total Hits: {hits}")
+    print(f"Total Misses: {misses}")
 if __name__ == "__main__":
     main() 

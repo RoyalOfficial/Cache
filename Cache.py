@@ -126,7 +126,7 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
     index = block_address % num_sets
     tag = block_address // num_sets
     
-    if mapping == "direct" or "d":
+    if mapping == "direct":
         if index in cache and cache[index] == tag:
             return "Hit"
         else:
@@ -143,7 +143,7 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
             return "Hit"
         else:
             if (len(tag_list) >= set_associativity):
-                cache[index].pop(0) #Get rid of most recently used
+                cache[index].pop(set_associativity) #Get rid of most recently used
             cache[index].append(tag) #Add the new tag
             return "Miss"
         

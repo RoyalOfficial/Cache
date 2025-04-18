@@ -24,12 +24,12 @@ def calculate_real_size(nominal_size_value, tag_size, block_size, number_of_bloc
     :return: The function `calculate_real_size` returns the calculated real size value based on the
     formula provided in the function.
     """
-    data_bits = block_size * 8
-    bits_per_block = data_bits + int(tag_size) + 1
-    total_bits = bits_per_block * number_of_blocks
-    return total_bits
-    #real_size = nominal_size_value + ((int(tag_size) )/8)* (2**16)
-    #return real_size
+    #data_bits = block_size * 8
+    #bits_per_block = data_bits + int(tag_size) + 1
+    #total_bits = bits_per_block * number_of_blocks
+    #return total_bits
+    real_size = nominal_size_value + (((int(tag_size) )/8)*number_of_blocks)
+    return real_size
     #TODO fix this
 
 def calculate_tag_sizeDM(number_of_blocks, offset):
@@ -216,7 +216,8 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
 def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity):
     misses = 0
     hits = 0
-    rand_num = random.randint(1, 100000)
+    rander_num = random.randint(1, number_of_blocks)
+    rand_num = random.randint(1, 10*rander_num)
     i = 0
     while (i <= rand_num):
         new_addr = random.randint(1,number_of_blocks)
@@ -268,7 +269,7 @@ def main():
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Index Size: {int(math.log2(amount_of_sets))} bits")
         print(f"Offset: {Offset} bits")
-        print(f"Real Size of Cache: {real_size / (2**13)} Kbytes \n")
+        print(f"Real Size of Cache: {(real_size / ((10**(3)))):.01f} Kbytes \n")
     else:
         print("-----------------------------------------------------------")
         print("Direct Mapping:")
@@ -276,7 +277,7 @@ def main():
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Index bits: {int(math.log2(number_of_blocks))} bits")
         print(f"Offset: {Offset} bits")
-        print(f"Real Size of Cache: {(real_size / (2**13)):.01f} Kbytes \n")
+        print(f"Real Size of Cache: {(real_size / (10**(3))):.01f} Kbytes \n")
 
     num_sets = amount_of_sets if SetAssociativity else number_of_blocks
 

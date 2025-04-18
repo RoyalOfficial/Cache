@@ -13,7 +13,7 @@ def calculate_amount_of_sets(number_of_blocks, set_associativity):
     amount_of_sets = int(number_of_blocks / set_associativity)
     return amount_of_sets 
 
-def calculate_real_size(tag_size, block_size, number_of_blocks):
+def calculate_real_size(nominal_size_value, tag_size, block_size, number_of_blocks):
     """
     This function calculates the real size based on a nominal size value and a tag size.
     
@@ -202,7 +202,7 @@ def main():
         print(f"Number of Block Size: {number_of_blocks} blocks")
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Real Size of Cache: {real_size} bits")
-        print(f"Real Size of Cache: {real_size / (2**10)} Kbytes")
+        print(f"Real Size of Cache: {real_size / (2**13)} Kbytes")
     num_sets = amount_of_sets if SetAssociativity else number_of_blocks
     input_addr = input("Enter a word address:")
     access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)

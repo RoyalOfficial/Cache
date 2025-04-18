@@ -1,4 +1,5 @@
 import math;
+import random;
 def calculate_amount_of_sets(number_of_blocks, set_associativity):
     """
     This function calculates the amount of sets based on the number of blocks and set associativity.
@@ -159,39 +160,73 @@ def clear_cache(mapping,cache):
         for i in cache:
             cache[i] = []
     
-def inaddr_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity):
+def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display):
     misses = 0
     hits = 0
-
+    
     input_addr = "LALALA"
     while (input_addr != "0"):
-        input_addr = input("Enter a word address (enter 0 to exit, clear to clear):")
+
+        if rand_in == "no in":
+            if Display == 1:
+                input_addr = input("Enter a word address (enter 0 to exit, clear to clear):")
+            else:
+                input_addr = input("")
+        else:
+            input_addr = rand_in
+
         if input_addr == "0":
             continue
+
         if (input_addr == "clear"):
             clear_cache(mapping, cache)
             print("Cache cleared! \n")
             misses = 0
             hits = 0
             continue
+
         if not input_addr.isdigit():
             print("Invalid input enter numerical values only \n")
             continue
+
         if int(input_addr) > int(number_of_blocks):
             print("Input out of range \n")
             continue
+
         accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
+
         if accuracy == "Hit":
             hits+=1
-            print(f"{input_addr} was a hit!")
-            print(f"Total Hits: {hits}")
-            print(f"Total Misses: {misses} \n")
+            if Display == 1:
+                print(f"{input_addr} was a hit!")
+                print(f"Total Hits: {hits}")
+                print(f"Total Misses: {misses} \n")
         if accuracy == "Miss":
             misses+=1
-            print(f"{input_addr} was a miss!")
-            print(f"Total Hits: {hits}")
-            print(f"Total Misses: {misses} \n")
+            if Display == 1:
+                print(f"{input_addr} was a miss!")
+                print(f"Total Hits: {hits}")
+                print(f"Total Misses: {misses} \n")
+        
+        if rand_in != "no in":
+            break
+
     return (misses, hits)
+
+def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity):
+    misses = 0
+    hits = 0
+    rand_num = random.randint(1, 100000)
+    i = 0
+    while (i <= rand_num):
+        new_addr = random.randint(1,number_of_blocks)
+        new_addr = str(new_addr)
+        misses_temp, hits_temp = inaddr_loop(new_addr, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 0)
+        misses += misses_temp
+        hits += hits_temp
+        i += 1
+    return misses,hits
+
 
 def main():
 
@@ -245,7 +280,12 @@ def main():
 
     num_sets = amount_of_sets if SetAssociativity else number_of_blocks
 
-    misses,hits = inaddr_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity)
+    random_gen = input("Enter 1 for manual, 0 for random generated:")
+    if int(random_gen) == 1: 
+        rand_in = "no in"
+        misses,hits = inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 1)
+    else:
+        misses,hits = random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity)
     
     print(f"Total Hits: {hits}")
     print(f"Total Misses: {misses}")

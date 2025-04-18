@@ -156,6 +156,40 @@ def clear_cache(mapping,cache):
     else:
         for i in cache:
             cache[i] = []
+    
+def inaddr_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity):
+    misses = 0
+    hits = 0
+
+    input_addr = "LALALA"
+    while (input_addr != "0"):
+        input_addr = input("Enter a word address (enter 0 to exit, clear to clear):")
+        if input_addr == "0":
+            continue
+        if (input_addr == "clear"):
+            clear_cache(mapping, cache)
+            print("Cache cleared! \n")
+            misses = 0
+            hits = 0
+            continue
+        if not input_addr.isdigit():
+            print("Invalid input enter numerical values only \n")
+            continue
+        if int(input_addr) > int(number_of_blocks):
+            print("Input out of range \n")
+            continue
+        accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
+        if accuracy == "Hit":
+            hits+=1
+            print(f"{input_addr} was a hit!")
+            print(f"Total Hits: {hits}")
+            print(f"Total Misses: {misses} \n")
+        if accuracy == "Miss":
+            misses+=1
+            print(f"{input_addr} was a miss!")
+            print(f"Total Hits: {hits}")
+            print(f"Total Misses: {misses} \n")
+    return (misses, hits)
 
 def main():
 
@@ -196,8 +230,7 @@ def main():
         print(f"The amount of sets: {amount_of_sets} ({int(math.log2(amount_of_sets))} index bits)")
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Offset: {Offset} bits")
-        #print(f"Real Size of Cache: {real_size} bits")
-        print(f"Real Size of Cache: {real_size / (2**13)} Kbytes")
+        print(f"Real Size of Cache: {real_size / (2**13)} Kbytes \n")
     else:
         print("-----------------------------------------------------------")
         print("Direct Mapping:")
@@ -205,40 +238,12 @@ def main():
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Index bits: {int(math.log2(number_of_blocks))} bits")
         print(f"Offset: {Offset} bits")
-        #print(f"Real Size of Cache: {real_size} bits")
         print(f"Real Size of Cache: {real_size / (2**13)} Kbytes \n")
-    num_sets = amount_of_sets if SetAssociativity else number_of_blocks
-    #input_addr = input("Enter a word address:")
 
-    #access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
-    input_addr = "LALALA"
-    while (input_addr != "0"):
-        input_addr = input("Enter a word address (enter 0 to exit, clear to clear):")
-        if input_addr == "0":
-            continue
-        if (input_addr == "clear"):
-            clear_cache(mapping, cache)
-            print("Cache cleared! \n")
-            misses = 0
-            hits = 0
-            continue
-        if not input_addr.isdigit():
-            print("Invalid input enter numerical values only")
-            continue
-        if int(input_addr) > int(num_sets):
-            print("Input out of range")
-            continue
-        accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
-        if accuracy == "Hit":
-            hits+=1
-            print(f"{input_addr} was a hit!")
-            print(f"Total Hits: {hits}")
-            print(f"Total Misses: {misses} \n")
-        if accuracy == "Miss":
-            misses+=1
-            print(f"{input_addr} was a miss!")
-            print(f"Total Hits: {hits}")
-            print(f"Total Misses: {misses} \n")
+    num_sets = amount_of_sets if SetAssociativity else number_of_blocks
+
+    misses,hits = inaddr_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity)
+    
     print(f"Total Hits: {hits}")
     print(f"Total Misses: {misses}")
     print(f"Hit Rate: {(hits / (hits + misses)) * 100:.1f}%")

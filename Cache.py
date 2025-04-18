@@ -229,8 +229,9 @@ def main():
         print("-----------------------------------------------------------")
         print(f"Set Associativity: {SetAssociativity}")
         print(f"Number of Blocks in Cache: {number_of_blocks} blocks")
-        print(f"The amount of sets: {amount_of_sets} ({int(math.log2(amount_of_sets))} index bits)")
+        print(f"The amount of sets: {amount_of_sets}")
         print(f"Tag Size: {int(tag_size)} bits")
+        print(f"Index Size: {int(math.log2(amount_of_sets))} bits")
         print(f"Offset: {Offset} bits")
         print(f"Real Size of Cache: {real_size / (2**13)} Kbytes \n")
     else:
@@ -240,7 +241,7 @@ def main():
         print(f"Tag Size: {int(tag_size)} bits")
         print(f"Index bits: {int(math.log2(number_of_blocks))} bits")
         print(f"Offset: {Offset} bits")
-        print(f"Real Size of Cache: {real_size / (2**13)} Kbytes \n")
+        print(f"Real Size of Cache: {(real_size / (2**13)):.01f} Kbytes \n")
 
     num_sets = amount_of_sets if SetAssociativity else number_of_blocks
 

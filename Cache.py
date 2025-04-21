@@ -100,14 +100,19 @@ def user_input():
     nominal_size = input("Enter the nominal size of the cache and specify the amount of bytes (as in KB,MB): ")
     WordPerBlock = input("Enter the number of words per block(1, 2, 4, 8): ")
     if WordPerBlock not in ["1", "2", "4", "8"]:
-        print("Invalid input")
-        exit(1)
+        print("Invalid input: Restarting")
+        print("----------------------------------------------------------- \n")
+        main()
     Mapping = input("Enter the mapping type (Direct, Set): ").lower()
     if Mapping.lower() == "set":
         SetAssociativity = input("Enter the set associativity: ")
         SetAssociativity = int(SetAssociativity)
-    else:
+    elif Mapping.lower() == "direct":
         SetAssociativity = None
+    else:
+        print("Invalid mapping type: Restarting")
+        print("----------------------------------------------------------- \n")
+        main()
     return nominal_size, WordPerBlock, Mapping, SetAssociativity
 
 def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity):
@@ -229,10 +234,14 @@ def main():
     hits = 0 
     misses = 0
 
-    if 'KB' in nominal_size_list[1]:
+    if 'kb' in nominal_size_list[1].lower:
         nominal_size_value = float(nominal_size_list[0]) * 1024
-    elif 'MB' in nominal_size_list[1]:
+    elif 'mb' in nominal_size_list[1].lower:
         nominal_size_value = float(nominal_size_list[0]) * 1024 * 1024
+    else:
+        print("Invalid size: Restarting")
+        print("----------------------------------------------------------- \n")
+        main()
 
     words_per_block = int(words_per_block)
     BlockSize = calculate_block_size(words_per_block)
@@ -241,8 +250,9 @@ def main():
 
     if SetAssociativity:
         if number_of_blocks % SetAssociativity != 0:
-            print("Invalid configuration: associativity must evenly divide number of blocks")
-            exit(1)
+            print("Invalid configuration: associativity must evenly divide number of blocks: Restarting")
+            print("----------------------------------------------------------- \n")
+            main()
         amount_of_sets = calculate_amount_of_sets(number_of_blocks, SetAssociativity)
         tag_size = 32 - int(math.log2(amount_of_sets)) - Offset
         cache = {i: [] for i in range(amount_of_sets)}

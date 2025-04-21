@@ -1,5 +1,6 @@
 import math;
 import random;
+import time;
 def calculate_amount_of_sets(number_of_blocks, set_associativity):
     """
     This function calculates the amount of sets based on the number of blocks and set associativity.
@@ -256,7 +257,7 @@ def main():
         print(f"Set Associativity: {SetAssociativity}")
         print(f"Number of Blocks in Cache: {number_of_blocks} blocks")
         print(f"The amount of sets: {amount_of_sets}")
-        print(f"Tag Size: {int(tag_size)} bits")
+        print(f"Tag Size: 1 valid bit + {int(tag_size)-1} bits")
         print(f"Index Size: {int(math.log2(amount_of_sets))} bits")
         print(f"Offset: {Offset} bits")
         print(f"Real Size of Cache: {(real_size / ((10**(3)))):.01f} Kbytes \n")
@@ -264,7 +265,7 @@ def main():
         print("-----------------------------------------------------------")
         print("Direct Mapping:")
         print(f"Number of Blocks in Cache: {number_of_blocks} blocks")
-        print(f"Tag Size: {int(tag_size)} bits")
+        print(f"Tag Size: 1 valid bit + {int(tag_size)-1} bits")
         print(f"Index bits: {int(math.log2(number_of_blocks))} bits")
         print(f"Offset: {Offset} bits")
         print(f"Real Size of Cache: {(real_size / (10**(3))):.01f} Kbytes \n")
@@ -282,6 +283,27 @@ def main():
     print(f"Total Misses: {misses}")
     print(f"Hit Rate: {(hits / (hits + misses)) * 100:.1f}%")
     print(f"Miss Rate: {(misses / (hits + misses)) * 100:.1f}% \n")
-    
+
+    reset_in = input("Enter 1 to restart, 0 to end calculation:")
+    if reset_in == '1':
+        print("\n")
+        print("----------------------------------------------------------- \n")
+        clear_cache(mapping,cache)
+        main()
+    else:
+        print("\n")
+        reset_in == 0
+        print("Ending calculation...")
+        time.sleep(1.2)
+        print("Disabling L2 Cache of CPU 1")
+        time.sleep(0.8)
+        print("Ending task 'main'")
+        time.sleep(0.9)
+        print("Installing Minecraft")
+        time.sleep(1.5)
+        print("Uninstalling Minecraft")
+        time.sleep(1.2)
+        print("End")
+
 if __name__ == "__main__":
     main() 

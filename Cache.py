@@ -30,7 +30,6 @@ def calculate_real_size(nominal_size_value, tag_size, block_size, number_of_bloc
     #return total_bits
     real_size = nominal_size_value + (((int(tag_size) )/8)*number_of_blocks)
     return real_size
-    #TODO fix this
 
 def calculate_tag_sizeDM(number_of_blocks, offset):
     """
@@ -122,7 +121,6 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
     """
     This function is responsible for accessing the cache and depends on direct mapping
     """
-    #TODO fix the bad set ass thing
     block_address = word_address // words_per_block
     index = block_address % num_sets
     tag = block_address // num_sets

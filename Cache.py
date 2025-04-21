@@ -10,7 +10,7 @@ def calculate_amount_of_sets(number_of_blocks, set_associativity):
     be mapped to a single set in a cache memory system. It is used to calculate the number of sets
     in the cache
     :return: the amount of sets in the cache.
-    """
+    """ #TODO change tag size to include a valid bit, fix ugly comments
     amount_of_sets = int(number_of_blocks / set_associativity)
     return amount_of_sets 
 

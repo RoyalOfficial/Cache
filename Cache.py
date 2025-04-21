@@ -24,13 +24,8 @@ def calculate_real_size(nominal_size_value, tag_size, block_size, number_of_bloc
     :return: The function `calculate_real_size` returns the calculated real size value based on the
     formula provided in the function.
     """
-    #data_bits = block_size * 8
-    #bits_per_block = data_bits + int(tag_size) + 1
-    #total_bits = bits_per_block * number_of_blocks
-    #return total_bits
     real_size = nominal_size_value + (((int(tag_size) )/8)*number_of_blocks)
     return real_size
-    #TODO fix this
 
 def calculate_tag_sizeDM(number_of_blocks, offset):
     """
@@ -44,8 +39,6 @@ def calculate_tag_sizeDM(number_of_blocks, offset):
     """
     index_bits = int(math.log2(number_of_blocks))
     return 32 - index_bits - int(offset)
-    #tag_size = (32 - math.log2(int(number_of_blocks)) - int(offset))
-    #return tag_size
 
 def calculate_number_of_blocks(nominal_size_value, block_size):
     """
@@ -91,8 +84,6 @@ def calculate_offset(block_size):
     logarithm of the result.
     """
     return int(math.log2(block_size))
-    #offset = math.log2(int(block_size)*4)
-    #return offset
 
 def user_input():
     """

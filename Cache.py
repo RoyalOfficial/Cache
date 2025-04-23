@@ -188,15 +188,15 @@ def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block,
 def main():
 
     nominal_size, words_per_block, mapping, SetAssociativity = user_input()
-    # Convert nominal size to bytes
+
     nominal_size_list = nominal_size.split()
     nominal_size_value = 0
     hits = 0 
     misses = 0
 
-    if 'kb' in nominal_size_list[1].lower:
+    if "kb" in nominal_size_list[1].lower:
         nominal_size_value = float(nominal_size_list[0]) * 1024
-    elif 'mb' in nominal_size_list[1].lower:
+    elif "mb" == nominal_size_list[1].lower:
         nominal_size_value = float(nominal_size_list[0]) * 1024 * 1024
     else:
         print("Invalid size: Restarting")

@@ -1,6 +1,7 @@
 import math;
 import random;
 import time;
+
 def calculate_amount_of_sets(number_of_blocks, set_associativity):
     """
     T
@@ -26,7 +27,6 @@ def calculate_number_of_blocks(nominal_size_value, block_size):
     """
     T
     """
-    
     nominal_size = int(nominal_size_value)
     block_size = int(block_size)
     return nominal_size // block_size
@@ -36,7 +36,6 @@ def calculate_block_size(word_per_block):
     """
     T
     """
-    
     block_size = word_per_block * 4
     return block_size
 
@@ -50,23 +49,28 @@ def user_input():
     """
     T
     """
-    
     nominal_size = input("Enter the nominal size of the cache and specify the amount of bytes (as in KB,MB): ")
     WordPerBlock = input("Enter the number of words per block(1, 2, 4, 8): ")
+
     if WordPerBlock not in ["1", "2", "4", "8"]:
         print("Invalid input: Restarting")
         print("----------------------------------------------------------- \n")
         main()
+
     Mapping = input("Enter the mapping type (Direct, Set): ").lower()
+
     if Mapping.lower() == "set":
         SetAssociativity = input("Enter the set associativity: ")
         SetAssociativity = int(SetAssociativity)
+
     elif Mapping.lower() == "direct":
         SetAssociativity = None
+
     else:
         print("Invalid mapping type: Restarting")
         print("----------------------------------------------------------- \n")
         main()
+
     return nominal_size, WordPerBlock, Mapping, SetAssociativity
 
 def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity):
@@ -87,11 +91,13 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
     if mapping == "set":
         # Grabs the set (list of all the tags)
         tag_list = cache[index]
+
         if tag in cache[index]:
             #LRU(leasy recently used) move the most recently used to the end
             tag_list.remove(tag)
             tag_list.append(tag)
             return "Hit"
+        
         else:
             if (len(tag_list) >= set_associativity):
                 cache[index].pop(set_associativity) #Get rid of most recently used
@@ -167,6 +173,7 @@ def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block,
     rander_num = random.randint(1, number_of_blocks)
     rand_num = random.randint(1, 10*rander_num)
     i = 0
+
     while (i <= rand_num):
         new_addr = random.randint(1,number_of_blocks)
         new_addr = str(new_addr)
@@ -174,6 +181,7 @@ def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block,
         misses += misses_temp
         hits += hits_temp
         i += 1
+        
     return misses,hits
 
 

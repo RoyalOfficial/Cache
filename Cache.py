@@ -49,8 +49,8 @@ def user_input():
     """
     T
     """
-    nominal_size = input("Enter the nominal size of the cache and specify the amount of bytes (as in KB,MB): ")
-    WordPerBlock = input("Enter the number of words per block(1, 2, 4, 8): ")
+    nominal_size = input("Enter the nominal size of the cache ([Most Sig Fig] [B,KB,MB,TB]): ")
+    WordPerBlock = input("Enter the number of words per block (1, 2, 4, 8): ")
 
     if WordPerBlock not in ["1", "2", "4", "8"]:
         print("Invalid input: Restarting")
@@ -193,11 +193,15 @@ def main():
     nominal_size_value = 0
     hits = 0 
     misses = 0
-
-    if "kb" in nominal_size_list[1].lower:
-        nominal_size_value = float(nominal_size_list[0]) * 1024
-    elif "mb" == nominal_size_list[1].lower:
-        nominal_size_value = float(nominal_size_list[0]) * 1024 * 1024
+    
+    if "b" == (str(nominal_size_list[1])).lower():
+        nominal_size_value = float(nominal_size_list[0])
+    elif "kb" == (str(nominal_size_list[1])).lower():
+        nominal_size_value = float(nominal_size_list[0]) * (2**10)
+    elif "mb" == (str(nominal_size_list[1])).lower():
+        nominal_size_value = float(nominal_size_list[0]) * (2**20)
+    elif "tb" == (str(nominal_size_list[1])).lower():
+        nominal_size_value = float(nominal_size_list[0]) * (2**30)
     else:
         print("Invalid size: Restarting")
         print("----------------------------------------------------------- \n")
@@ -230,7 +234,7 @@ def main():
         print(f"Tag Size: 1 valid bit + {int(tag_size)-1} bits")
         print(f"Index Size: {int(math.log2(amount_of_sets))} bits")
         print(f"Offset: {Offset} bits")
-        print(f"Real Size of Cache: {(real_size / ((10**(3)))):.01f} Kbytes \n")
+        print(f"Real Size of Cache: {(real_size / ((10**(3)))):.3f} Kbytes \n")
     else:
         print("-----------------------------------------------------------")
         print("Direct Mapping:")
@@ -238,11 +242,11 @@ def main():
         print(f"Tag Size: 1 valid bit + {int(tag_size)-1} bits")
         print(f"Index bits: {int(math.log2(number_of_blocks))} bits")
         print(f"Offset: {Offset} bits")
-        print(f"Real Size of Cache: {(real_size / (10**(3))):.01f} Kbytes \n")
+        print(f"Real Size of Cache: {(real_size / (10**(3))):.3f} Kbytes \n")
 
     num_sets = amount_of_sets if SetAssociativity else number_of_blocks
 
-    random_gen = input("Enter 1 for manual, 0 for random generated:")
+    random_gen = input("Enter 1 for manual, 0 for random generated: ")
     if int(random_gen) == 1: 
         rand_in = "no in"
         misses,hits = inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 1)
@@ -251,8 +255,12 @@ def main():
     
     print(f"Total Hits: {hits}")
     print(f"Total Misses: {misses}")
-    print(f"Hit Rate: {(hits / (hits + misses)) * 100:.1f}%")
-    print(f"Miss Rate: {(misses / (hits + misses)) * 100:.1f}% \n")
+    if (hits+misses) != 0:
+        print(f"Hit Rate: {(hits / (hits + misses)) * 100:.1f}%")
+        print(f"Miss Rate: {(misses / (hits + misses)) * 100:.1f}% \n")
+    else: 
+        print("Hit Rate: 0%")
+        print("Miss Rate: 100%")
 
     reset_in = input("Enter 1 to restart, 0 to end calculation:")
     if reset_in == '1':
@@ -273,7 +281,7 @@ def main():
         time.sleep(1.5)
         print("Uninstalling Minecraft")
         time.sleep(1.2)
-        print("End")
+        print("End \n")
 
 if __name__ == "__main__":
     main() 

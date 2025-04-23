@@ -3,55 +3,28 @@ import random;
 import time;
 def calculate_amount_of_sets(number_of_blocks, set_associativity):
     """
-    This function calculates the amount of sets based on the number of blocks and set associativity.
-    
-    :param number_of_blocks: The `number_of_blocks` parameter represents the total number of blocks
-    in a cache or memory system
-    :param set_associativity: The `set_associativity` parameter represents the number of blocks that can
-    be mapped to a single set in a cache memory system. It is used to calculate the number of sets
-    in the cache
-    :return: the amount of sets in the cache.
-    """ #TODO change tag size to include a valid bit, fix ugly comments
+    T
+    """ #TODO change tag size to include a valid bit, fix ugly comments, add locality (add the next 3 addresses)
     amount_of_sets = int(number_of_blocks / set_associativity)
     return amount_of_sets 
 
 def calculate_real_size(nominal_size_value, tag_size, block_size, number_of_blocks):
     """
-    This function calculates the real size based on a nominal size value and a tag size.
-    
-    :param nominal_size_value: The `nominal_size_value` parameter represents the base value of the size.
-    It is the starting point for calculating the real size
-    :param tag_size: Tag size is the size of the tag in bits
-    :return: The function `calculate_real_size` returns the calculated real size value based on the
-    formula provided in the function.
+    T
     """
     real_size = nominal_size_value + (((int(tag_size) )/8)*number_of_blocks)
     return real_size
 
 def calculate_tag_sizeDM(number_of_blocks, offset):
     """
-    This function calculates the tag size based on the number of blocks and offset.
-    :param number_of_blocks: The `number_of_blocks` parameter represents the total number of blocks
-    in a cache or memory system
-    :param offset: The `offset` parameter in the `calculate_tag_size` function represents the number of bits
-    used for the offset within a block. It is used to calculate the tag size by determining how many bits
-    are needed to represent the number of blocks
-    :return: the tag size in bits.
+    T
     """
     index_bits = int(math.log2(number_of_blocks))
     return 32 - index_bits - int(offset)
 
 def calculate_number_of_blocks(nominal_size_value, block_size):
     """
-    This function calculates the number of blocks that can fit within a given nominal size based on a
-    specified block size.
-    
-    :param nominal_size: The `nominal_size` parameter represents the total size of the material in
-    blocks
-    :param block_size: The `block_size` parameter in the `calculate_number_of_blocks` function
-    represents the size of each block in the calculation. This value is used to determine how many
-    blocks can fit into the `nominal_size`
-    :return: the number of blocks that can be created from a given nominal size and block size.
+    T
     """
     
     nominal_size = int(nominal_size_value)
@@ -61,13 +34,7 @@ def calculate_number_of_blocks(nominal_size_value, block_size):
 
 def calculate_block_size(word_per_block):
     """
-    This function calculates the block size based on the number of words per block.
-    
-    :param word_per_block: It looks like the function `calculate_block_size` takes a parameter `word_per_block`
-    which represents the number of words in a block. The function calculates the block size based on this
-    input
-    :return: The function `calculate_block_size` returns the block size in bytes, which is calculated by
-    multiplying the `word_per_block` parameter by 4 (assuming each word is 4 bytes).
+    T
     """
     
     block_size = word_per_block * 4
@@ -75,26 +42,13 @@ def calculate_block_size(word_per_block):
 
 def calculate_offset(block_size):
     """
-    This function calculates the offset based on the number of words per block.
-    
-    :param WordPerBlock: It looks like the function `calculate_offset` takes a parameter `WordPerBlock`
-    which represents the number of words per block. The function calculates the offset based on this
-    input
-    :return: The function `calculate_offset` returns the offset calculated based on the block size,
-    which is determined by multiplying the `WordPerBlock` parameter by 4 and then taking the base 2
-    logarithm of the result.
+    T
     """
     return int(math.log2(block_size))
 
 def user_input():
     """
-    This function prompts the user to input cache parameters such as nominal size, words per
-    block, and mapping type, handling set associativity if specified.
-    :return: The `user_input` function returns a tuple containing the following values in order:
-    1. nominal_size
-    2. WordPerBlock
-    3. Mapping
-    4. SetAssociativity
+    T
     """
     
     nominal_size = input("Enter the nominal size of the cache and specify the amount of bytes (as in KB,MB): ")
@@ -117,7 +71,7 @@ def user_input():
 
 def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity):
     """
-    This function is responsible for accessing the cache and depends on direct mapping
+    T
     """
     block_address = word_address // words_per_block
     index = block_address % num_sets
@@ -146,9 +100,7 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
         
 def clear_cache(mapping,cache):
     """
-    Takes in a cache and clears it
-    :param Mapping: Type of mapping which depends on how cache is cleared
-    :param cache: cache to clear
+    T
     """
     if mapping == "direct":
         cache.clear()

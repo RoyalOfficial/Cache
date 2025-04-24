@@ -5,7 +5,7 @@ import time;
 def calculate_amount_of_sets(number_of_blocks, set_associativity):
     """
     T
-    """ #TODO change tag size to include a valid bit, fix ugly comments, add locality (add the next 3 addresses)
+    """ #TODO fix ugly comments
     amount_of_sets = int(number_of_blocks / set_associativity)
     return amount_of_sets 
 
@@ -20,7 +20,12 @@ def calculate_tag_sizeDM(number_of_blocks, offset):
     """
     T
     """
-    index_bits = int(math.log2(number_of_blocks))
+    if number_of_blocks == 0:
+        print("Size of nominal size too small: Restarting")
+        print("----------------------------------------------------------- \n")
+        main()
+    else:
+        index_bits = int(math.log2(number_of_blocks))
     return 32 - index_bits - int(offset)
 
 def calculate_number_of_blocks(nominal_size_value, block_size):
@@ -151,17 +156,17 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
     hits = 0
     
     input_addr = "LALALA"
-    while (input_addr != "0"):
+    while (input_addr != "X"):
 
         if rand_in == "no in":
             if Display == 1:
-                input_addr = input("Enter a word address (enter 0 to exit, clear to clear):")
+                input_addr = input("Enter a word address (enter X to exit, clear to clear): ")
             else:
                 input_addr = input("")
         else:
             input_addr = rand_in
 
-        if input_addr == "0":
+        if input_addr == "X":
             continue
 
         if (input_addr == "clear"):
@@ -226,7 +231,12 @@ def main():
     misses = 0
     
     if "b" == (str(nominal_size_list[1])).lower():
-        nominal_size_value = float(nominal_size_list[0])
+        if int(nominal_size_list[0]) < 3:
+            print("Size of nominal size too small: Restarting")
+            print("----------------------------------------------------------- \n")
+            main()
+        else:
+            nominal_size_value = float(nominal_size_list[0])
     elif "kb" == (str(nominal_size_list[1])).lower():
         nominal_size_value = float(nominal_size_list[0]) * (2**10)
     elif "mb" == (str(nominal_size_list[1])).lower():
@@ -291,9 +301,9 @@ def main():
         print(f"Miss Rate: {(misses / (hits + misses)) * 100:.1f}% \n")
     else: 
         print("Hit Rate: 0%")
-        print("Miss Rate: 100%")
+        print("Miss Rate: 100% \n")
 
-    reset_in = input("Enter 1 to restart, 0 to end calculation:")
+    reset_in = input("Enter 1 to restart, 0 to end calculation: ")
     if reset_in == '1':
         print("\n")
         print("----------------------------------------------------------- \n")

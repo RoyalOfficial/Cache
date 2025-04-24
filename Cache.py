@@ -111,7 +111,8 @@ def clear_cache(mapping,cache):
     T
     """
     if mapping == "direct":
-        cache.clear()
+        for i in cache:
+            cache[i] = None
     else:
         for i in cache:
             cache[i] = []
@@ -174,9 +175,9 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
             print("Invalid input enter numerical values only \n")
             continue
 
-        if int(input_addr) > int(number_of_blocks):
-            print("Input out of range \n")
-            continue
+        # if int(input_addr) > int(number_of_blocks):
+        #     print("Input out of range \n")
+        #     continue
 
         accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
 

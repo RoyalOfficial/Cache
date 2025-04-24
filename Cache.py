@@ -5,7 +5,7 @@ import time;
 def calculate_amount_of_sets(number_of_blocks, set_associativity):
     """
     T
-    """ #TODO change tag size to include a valid bit, fix ugly comments, add locality (add the next 3 addresses)
+    """ #TODO fix ugly comments
     amount_of_sets = int(number_of_blocks / set_associativity)
     return amount_of_sets 
 

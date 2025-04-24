@@ -80,29 +80,31 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
     block_address = word_address // words_per_block
     index = block_address % num_sets
     tag = block_address // num_sets
+    block_start = word_address - (word_address % words_per_block)
     
     if mapping == "direct":
-        if index in cache and cache[index] == tag:
+        if index in cache and cache[index] is not None and cache[index][0] == tag:
+            print_cache(cache, words_per_block);
             return "Hit"
         else:
-            cache[index] = tag
+            cache[index] = (tag, block_start) 
+            print_cache(cache, words_per_block);
             return "Miss"
         
     if mapping == "set":
         # Grabs the set (list of all the tags)
         tag_list = cache[index]
-
-        if tag in cache[index]:
-            #LRU(leasy recently used) move the most recently used to the end
-            tag_list.remove(tag)
-            tag_list.append(tag)
-            return "Hit"
-        
-        else:
-            if (len(tag_list) >= set_associativity):
-                cache[index].pop(set_associativity) #Get rid of most recently used
-            cache[index].append(tag) #Add the new tag
-            return "Miss"
+        for i, entry in enumerate(cache[index]):
+            if entry[0] == tag:
+                #LRU(leasy recently used) move the most recently used to the end
+                cache[index].append(cache[index].pop(i))
+                print_cache(cache, words_per_block);
+                return "Hit"
+        if (len(tag_list) >= set_associativity):
+            cache[index].pop(0) #Get rid of most recently used
+        cache[index].append((tag, block_start)) #Add the new tag
+        print_cache(cache, words_per_block);
+        return "Miss"
         
 def clear_cache(mapping,cache):
     """
@@ -113,7 +115,36 @@ def clear_cache(mapping,cache):
     else:
         for i in cache:
             cache[i] = []
+
+def print_cache(cache, words_per_block):
+    """
+    Prints out given cache based on the words per block
+    """
+    print("Cache contents:")
+    max_index = max(cache.keys()) if cache else -1
+    lines = [] #For making it two columns
+
+    for index in range(max_index + 1):
+        value = cache[index]
+
+        if isinstance(value, list):  # Set-associative
+            if value:
+                blocks = [[entry[1] + i for i in range(words_per_block)] for entry in value]
+                line = f"Set {index}: Blocks {blocks}"
+            else:
+                line = f"Set {index}: Blocks []"
+        elif value is not None:  # Direct-mapped with data
+            block = [value[1] + i for i in range(words_per_block)]
+            line = f"Index {index}: Block {block}"
+        else: #No data current in the data
+            line = f"Index {index}: Block []"
+        lines.append(line)
     
+    for i in range(0, len(lines), 2):
+        left = lines[i]
+        right = lines[i+1] if i+1 < len(lines) else ""
+        print(f"{left:<40} {right}")
+        
 def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display):
     misses = 0
     hits = 0
@@ -164,7 +195,6 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
         
         if rand_in != "no in":
             break
-
     return (misses, hits)
 
 def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity):
@@ -221,7 +251,7 @@ def main():
         tag_size = 32 - int(math.log2(amount_of_sets)) - Offset
         cache = {i: [] for i in range(amount_of_sets)}
     else:
-        cache = {}
+        cache = {i: None for i in range(number_of_blocks)}
         tag_size = calculate_tag_sizeDM(number_of_blocks, Offset)
 
     real_size = calculate_real_size(nominal_size_value, tag_size, BlockSize, number_of_blocks)

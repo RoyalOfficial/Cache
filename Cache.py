@@ -124,7 +124,7 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
     hits = 0
     
     input_addr = "LALALA"
-    while (input_addr != "0"):
+    while (input_addr != "X"):
 
         if rand_in == "no in":
             if Display == 1:

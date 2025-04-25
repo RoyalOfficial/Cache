@@ -50,7 +50,7 @@ def calculate_block_size(word_per_block):
 
 def calculate_offset(block_size):
     """
-    Calculate the bits required for offset based off size of block.
+    Calculates the bits required for offset based off size of block.
     """
     return int(math.log2(block_size))
 
@@ -85,7 +85,7 @@ def user_input():
 
 def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity, Display):
     """
-    Accesses the cache, first calculated the address with floor division and the index from the 
+    Accesses the cache, first calculates the address with floor division and the index from the 
     modulus of block address and the amount of sets. The tag is set to be the block_address 
     floor divided with the number of sets. Then it adds the word addresses to the cache 
     based on mapping type.

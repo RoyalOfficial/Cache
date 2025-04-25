@@ -4,21 +4,23 @@ import time;
 
 def calculate_amount_of_sets(number_of_blocks, set_associativity):
     """
-    T
-    """ #TODO fix ugly comments
+    Uses the number of blocks and the set associativity to find number of sets.
+    """
     amount_of_sets = int(number_of_blocks / set_associativity)
     return amount_of_sets 
 
-def calculate_real_size(nominal_size_value, tag_size, block_size, number_of_blocks):
+def calculate_real_size(nominal_size_value, tag_size, number_of_blocks):
     """
-    T
+    Calculates real size of the cache based of nominal size, bits of tag, and number
+    of blocks.
     """
     real_size = nominal_size_value + (((int(tag_size) )/8)*number_of_blocks)
     return real_size
 
 def calculate_tag_sizeDM(number_of_blocks, offset):
     """
-    T
+    Calculate the bits in tag + valid bit.
+    Starts program over if nominal size was too small.
     """
     if number_of_blocks == 0:
         print("Size of nominal size too small: Restarting")
@@ -30,7 +32,8 @@ def calculate_tag_sizeDM(number_of_blocks, offset):
 
 def calculate_number_of_blocks(nominal_size_value, block_size):
     """
-    T
+    Calculate the number of blocks based of nominal size and the
+    size of each block.
     """
     nominal_size = int(nominal_size_value)
     block_size = int(block_size)
@@ -39,20 +42,22 @@ def calculate_number_of_blocks(nominal_size_value, block_size):
 
 def calculate_block_size(word_per_block):
     """
-    T
+    Calculates the size of each block by taking the 
+    words per block mutiplied by the bytes per block.
     """
     block_size = word_per_block * 4
     return block_size
 
 def calculate_offset(block_size):
     """
-    T
+    Calculate the bits required for offset based off size of block.
     """
     return int(math.log2(block_size))
 
 def user_input():
     """
-    T
+    Gathers the spesifications of the cache based off user inputs.
+    Finds: Nominal size, Words per block, Direct or Set Associative, and Set associativity.
     """
     nominal_size = input("Enter the nominal size of the cache ([Most Sig Fig] [B,KB,MB,TB]): ")
     WordPerBlock = input("Enter the number of words per block (1, 2, 4, 8): ")
@@ -156,7 +161,21 @@ def print_cache(cache, words_per_block, Display):
             right = lines[i+1] if i+1 < len(lines) else ""
             print(f"{left:<40} {right}")
             
-def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display):
+def inaddr_loop(rand_in, mapping, cache, num_sets, words_per_block, SetAssociativity, Display):
+    """
+    Muti-purpose loop that finds:
+        If user selected manual word inputs
+            Prompts for input
+            Checks if input = X (exit loop)
+            Checks if input = clear (clears cache)
+            Checks if input != number (Invalid)
+            Accesses cache
+            Prints if hit or miss and returns totals
+        If user selected random
+            Does not print anything
+            Accesses cache
+            Returns hit or miss to call
+    """
     misses = 0
     hits = 0
     
@@ -172,7 +191,7 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
         else:
             input_addr = rand_in
 
-        if input_addr == "X":
+        if input_addr.lower() == "x":
             continue
 
         if (input_addr == "clear"):
@@ -185,10 +204,6 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
         if not input_addr.isdigit():
             print("Invalid input enter numerical values only \n")
             continue
-
-        # if int(input_addr) > int(number_of_blocks):
-        #     print("Input out of range \n")
-        #     continue
 
         accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity, Display)
 
@@ -210,6 +225,15 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
     return (misses, hits)
 
 def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity):
+    """
+    Finds the random inputs to the cache if user selects.
+
+    Loops a random number between 1 and number of blocks * 10.
+        Each interation of the loop finds a random input 
+        between 1 and number of blocks * words per block * 4
+
+    Returns the total hits and misses after the random loop completes.
+    """
     misses = 0
     hits = 0
     rander_num = random.randint(1, number_of_blocks)
@@ -219,7 +243,7 @@ def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block,
     while (i <= rand_num):
         new_addr = random.randint(1,number_of_blocks*words_per_block*4)
         new_addr = str(new_addr)
-        misses_temp, hits_temp = inaddr_loop(new_addr, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 0)
+        misses_temp, hits_temp = inaddr_loop(new_addr, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 0)
         misses += misses_temp
         hits += hits_temp
         i += 1
@@ -228,7 +252,7 @@ def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block,
 
 
 def main():
-
+    
     nominal_size, words_per_block, mapping, SetAssociativity = user_input()
 
     nominal_size_list = nominal_size.split()
@@ -271,7 +295,7 @@ def main():
         cache = {i: None for i in range(number_of_blocks)}
         tag_size = calculate_tag_sizeDM(number_of_blocks, Offset)
 
-    real_size = calculate_real_size(nominal_size_value, tag_size, BlockSize, number_of_blocks)
+    real_size = calculate_real_size(nominal_size_value, tag_size, number_of_blocks)
 
     if SetAssociativity:
         print("-----------------------------------------------------------")
@@ -297,7 +321,7 @@ def main():
     print("----------------------------------------------------------- \n")
     if int(random_gen) == 1: 
         rand_in = "no in"
-        misses,hits = inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 1)
+        misses,hits = inaddr_loop(rand_in, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 1)
     else:
         misses,hits = random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity)
     

@@ -80,7 +80,10 @@ def user_input():
 
 def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity):
     """
-    T
+    Accesses the cache, first calculated the address with floor division and the index from the 
+    modulus of block address and the amount of sets. The tag is set to be the block_address 
+    floor divided with the number of sets. Then it adds the word addresses to the cache 
+    based on mapping type.
     """
     block_address = word_address // words_per_block
     index = block_address % num_sets
@@ -113,7 +116,7 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
         
 def clear_cache(mapping,cache):
     """
-    T
+    Clears the given cache based on the mapping.
     """
     if mapping == "direct":
         for i in cache:

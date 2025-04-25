@@ -78,7 +78,7 @@ def user_input():
 
     return nominal_size, WordPerBlock, Mapping, SetAssociativity
 
-def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity):
+def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_associativity, Display):
     """
     T
     """
@@ -89,11 +89,11 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
     
     if mapping == "direct":
         if index in cache and cache[index] is not None and cache[index][0] == tag:
-            print_cache(cache, words_per_block);
+            print_cache(cache, words_per_block, Display);
             return "Hit"
         else:
             cache[index] = (tag, block_start) 
-            print_cache(cache, words_per_block);
+            print_cache(cache, words_per_block, Display);
             return "Miss"
         
     if mapping == "set":
@@ -103,12 +103,12 @@ def access_cache(word_address, words_per_block, mapping, num_sets, cache, set_as
             if entry[0] == tag:
                 #LRU(leasy recently used) move the most recently used to the end
                 cache[index].append(cache[index].pop(i))
-                print_cache(cache, words_per_block);
+                print_cache(cache, words_per_block, Display);
                 return "Hit"
         if (len(tag_list) >= set_associativity):
             cache[index].pop(0) #Get rid of most recently used
         cache[index].append((tag, block_start)) #Add the new tag
-        print_cache(cache, words_per_block);
+        print_cache(cache, words_per_block, Display);
         return "Miss"
         
 def clear_cache(mapping,cache):
@@ -122,35 +122,37 @@ def clear_cache(mapping,cache):
         for i in cache:
             cache[i] = []
 
-def print_cache(cache, words_per_block):
+def print_cache(cache, words_per_block, Display):
     """
     Prints out given cache based on the words per block
     """
-    print("Cache contents:")
-    max_index = max(cache.keys()) if cache else -1
-    lines = [] #For making it two columns
+    if Display == 1:
 
-    for index in range(max_index + 1):
-        value = cache[index]
+        print("Cache contents:")
+        max_index = max(cache.keys()) if cache else -1
+        lines = [] #For making it two columns
 
-        if isinstance(value, list):  # Set-associative
-            if value:
-                blocks = [[entry[1] + i for i in range(words_per_block)] for entry in value]
-                line = f"Set {index}: Blocks {blocks}"
-            else:
-                line = f"Set {index}: Blocks []"
-        elif value is not None:  # Direct-mapped with data
-            block = [value[1] + i for i in range(words_per_block)]
-            line = f"Index {index}: Block {block}"
-        else: #No data current in the data
-            line = f"Index {index}: Block []"
-        lines.append(line)
-    
-    for i in range(0, len(lines), 2):
-        left = lines[i]
-        right = lines[i+1] if i+1 < len(lines) else ""
-        print(f"{left:<40} {right}")
+        for index in range(max_index + 1):
+            value = cache[index]
+
+            if isinstance(value, list):  # Set-associative
+                if value:
+                    blocks = [[entry[1] + i for i in range(words_per_block)] for entry in value]
+                    line = f"Set {index}: Blocks {blocks}"
+                else:
+                    line = f"Set {index}: Blocks []"
+            elif value is not None:  # Direct-mapped with data
+                block = [value[1] + i for i in range(words_per_block)]
+                line = f"Index {index}: Block {block}"
+            else: #No data current in the data
+                line = f"Index {index}: Block []"
+            lines.append(line)
         
+        for i in range(0, len(lines), 2):
+            left = lines[i]
+            right = lines[i+1] if i+1 < len(lines) else ""
+            print(f"{left:<40} {right}")
+            
 def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display):
     misses = 0
     hits = 0
@@ -161,6 +163,7 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
         if rand_in == "no in":
             if Display == 1:
                 input_addr = input("Enter a word address (enter X to exit, clear to clear): ")
+                print("----------------------------------------------------------- \n")
             else:
                 input_addr = input("")
         else:
@@ -184,7 +187,7 @@ def inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_b
         #     print("Input out of range \n")
         #     continue
 
-        accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity)
+        accuracy = access_cache(int(input_addr), int(words_per_block), mapping, int(num_sets), cache, SetAssociativity, Display)
 
         if accuracy == "Hit":
             hits+=1
@@ -211,7 +214,7 @@ def random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block,
     i = 0
 
     while (i <= rand_num):
-        new_addr = random.randint(1,number_of_blocks)
+        new_addr = random.randint(1,number_of_blocks*words_per_block*4)
         new_addr = str(new_addr)
         misses_temp, hits_temp = inaddr_loop(new_addr, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 0)
         misses += misses_temp
@@ -288,12 +291,15 @@ def main():
     num_sets = amount_of_sets if SetAssociativity else number_of_blocks
 
     random_gen = input("Enter 1 for manual, 0 for random generated: ")
+    print("----------------------------------------------------------- \n")
     if int(random_gen) == 1: 
         rand_in = "no in"
         misses,hits = inaddr_loop(rand_in, number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity, Display = 1)
     else:
         misses,hits = random_gen_loop(number_of_blocks, mapping, cache, num_sets, words_per_block, SetAssociativity)
     
+    print_cache(cache, words_per_block, Display=1)
+    print("----------------------------------------------------------- \n")
     print(f"Total Hits: {hits}")
     print(f"Total Misses: {misses}")
     if (hits+misses) != 0:
